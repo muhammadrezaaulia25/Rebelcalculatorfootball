@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1b2b">
+<title>Rebel Football Calculator</title>
+<style>
+:root{--bg:#0b1b2b;--panel:#12263a;--panel2:#173049;--ink:#eaf1f7;--mute:#8ea3b7;--line:#24405c;--lamp:#ffb547;--pitch:#2fa66b;--away:#5aa9e6;--draw:#6c7f93;--bad:#ff7a6b}
+@media (prefers-color-scheme:light){:root{--bg:#eef3f7;--panel:#fff;--panel2:#e6edf3;--ink:#0f2236;--mute:#52667a;--line:#cfdae4;--lamp:#b36b00;--pitch:#1b8a53;--away:#2478b8;--draw:#8596a6;--bad:#c4352a}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+main{max-width:600px;margin:0 auto;padding:16px 16px 56px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 18px}
+.brand{font-family:Georgia,"Times New Roman",serif;font-size:1.5rem;font-weight:700;letter-spacing:.2px;line-height:1.1}
+.brand small{display:block;font:500 .8rem "Segoe UI",system-ui,sans-serif;color:var(--mute);letter-spacing:0;margin-top:3px}
+.lang{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px}
+.lang button{border:0;background:transparent;color:var(--mute);padding:7px 14px;border-radius:999px;font:600 .85rem inherit;font-family:inherit;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--lamp);color:#1b1300}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+h2{font-size:.95rem;margin:0 0 12px;color:var(--mute);font-weight:600}
+label{display:block;font-size:.85rem;color:var(--mute);margin-bottom:5px}
+input{width:100%;padding:12px;font:inherit;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+input::placeholder{color:var(--mute);opacity:.6}
+input:focus-visible,button:focus-visible{outline:2px solid var(--lamp);outline-offset:2px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form .col>div{display:grid;gap:6px}
+.form input{text-align:center;padding:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips button{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:999px;padding:5px 11px;font:inherit;font-size:.82rem;cursor:pointer}
+.chips button:hover{border-color:var(--lamp)}
+select{width:100%;padding:10px;font:inherit;font-size:.85rem;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:10px;margin-top:8px}
+.src{margin-top:12px;font-size:.8rem;color:var(--mute)}.src b{color:var(--ink);display:block;margin:8px 0 2px;font-size:.85rem}.src div{display:flex;justify-content:space-between;gap:8px;padding:2px 0}.src .w{color:var(--lamp)}
+details{margin:0 0 14px;font-size:.85rem;color:var(--mute)}summary{cursor:pointer;padding:6px 0}
+.hint{font-size:.8rem;color:var(--mute);margin:8px 0 0}
+.go{width:100%;padding:15px;border:0;border-radius:12px;background:var(--lamp);color:#1b1300;font:700 1.05rem inherit;font-family:inherit;cursor:pointer;margin:2px 0 14px}
+.go:active{transform:translateY(1px)}
+.err{background:rgba(255,122,107,.12);color:var(--bad);border-radius:10px;padding:10px 12px;font-size:.9rem;margin:0 0 12px}
+[hidden]{display:none!important}
+.board{text-align:center;padding:20px 12px}
+.board .names{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.board .tn{font-weight:600;overflow-wrap:anywhere}
+.board .sc{font:700 2.8rem Georgia,serif;letter-spacing:2px}
+.board .cap{color:var(--mute);font-size:.8rem;margin-top:4px}
+.pickbox{border:1px solid var(--lamp);border-radius:12px;padding:14px;margin-top:14px;text-align:left}
+.pickbox .l{font-size:.8rem;color:var(--mute)}
+.pickbox .v{font-size:1.25rem;font-weight:700;margin:2px 0}
+.conf{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--mute)}
+.dots{display:flex;gap:4px}.dots i{width:22px;height:6px;border-radius:3px;background:var(--line)}.dots i.on{background:var(--lamp)}
+.bar{display:flex;height:34px;border-radius:9px;overflow:hidden;font-size:.82rem;font-weight:700;color:#fff}
+.bar div{display:flex;align-items:center;justify-content:center;min-width:0;transition:width .5s}
+.bar .h{background:var(--pitch)}.bar .d{background:var(--draw)}.bar .a{background:var(--away)}
+.leg{display:flex;justify-content:space-between;font-size:.8rem;color:var(--mute);margin:6px 0 14px;gap:8px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.mini{background:var(--panel2);border-radius:10px;padding:10px 12px}
+.mini b{display:block;font-size:1.2rem}.mini span{font-size:.8rem;color:var(--mute)}
+.scores{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+.scores div{background:var(--panel2);border-radius:10px;padding:8px 2px;text-align:center}
+.scores b{display:block}.scores span{font-size:.78rem;color:var(--mute)}
+.act{display:flex;gap:10px;margin-top:14px}
+.act button{flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;cursor:pointer}
+.hist button{display:flex;width:100%;justify-content:space-between;gap:8px;text-align:left;background:var(--panel2);border:0;color:var(--ink);padding:10px 12px;border-radius:10px;margin-bottom:6px;font:inherit;font-size:.9rem;cursor:pointer}
+.hist button span:last-child{color:var(--mute);white-space:nowrap}
+.note{border-left:3px solid var(--lamp);padding:10px 12px;font-size:.85rem;color:var(--mute);background:var(--panel);border-radius:0 10px 10px 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header>
+ <div class="brand">Rebel Football<small id="sub"></small></div>
+ <div class="lang" role="group" aria-label="Language"><button id="bID" aria-pressed="true">ID</button><button id="bEN" aria-pressed="false">EN</button></div>
+</header>
+
+<section class="card">
+ <h2 id="h_teams"></h2>
+ <div class="two">
+  <div><label for="home" id="l_home"></label><input id="home" autocomplete="off" placeholder="Man City"></div>
+  <div><label for="away" id="l_away"></label><input id="away" autocomplete="off" placeholder="Arsenal"></div>
+ </div>
+ <div class="two" id="pickers" hidden><select id="selh" aria-label="Home team match"></select><select id="sela" aria-label="Away team match"></select></div>
+</section>
+
+<section class="card">
+ <h2 id="h_form"></h2>
+ <div class="form">
+  <div class="col"><label id="l_hf"></label><div id="hf"></div></div>
+  <div class="col"><label id="l_af"></label><div id="af"></div></div>
+ </div>
+ <p class="hint" id="t_formhint"></p>
+ <div class="src" id="src" hidden></div>
+</section>
+
+<section class="card">
+ <h2 id="h_lines"></h2>
+ <div class="two">
+  <div><label for="ah" id="l_ah"></label><input id="ah" inputmode="decimal" value="-0.5"><div class="chips" data-for="ah"></div></div>
+  <div><label for="ou" id="l_ou"></label><input id="ou" inputmode="decimal" value="2.5"><div class="chips" data-for="ou"></div></div>
+ </div>
+</section>
+
+<div class="err" id="err" hidden role="alert"></div>
+<button class="go" id="go"></button>
+
+<details><summary id="l_key"></summary><input id="apikey" autocomplete="off" placeholder="3"></details>
+
+<section id="out" hidden>
+ <div class="card board">
+  <div class="names"><div class="tn" id="rh"></div><div class="sc" id="rs"></div><div class="tn" id="ra"></div></div>
+  <div class="cap" id="t_sc"></div>
+  <div class="pickbox"><div class="l" id="t_pick"></div><div class="v" id="pick"></div>
+   <div class="conf"><span id="t_conf"></span><span class="dots" id="dots"></span><span id="confw"></span></div></div>
+ </div>
+ <div class="card">
+  <h2 id="t_1x2"></h2>
+  <div class="bar"><div class="h" id="bh"></div><div class="d" id="bd"></div><div class="a" id="ba"></div></div>
+  <div class="leg"><span id="lh"></span><span id="ld"></span><span id="la"></span></div>
+  <div class="row2">
+   <div class="mini"><span id="t_ahm"></span><b id="ahv"></b><span id="ahs"></span></div>
+   <div class="mini"><span id="t_oum"></span><b id="ouv"></b><span id="ous"></span></div>
+  </div>
+ </div>
+ <div class="card"><h2 id="t_top"></h2><div class="scores" id="top"></div>
+  <div class="act"><button id="copy"></button><button id="reset"></button></div></div>
+</section>
+
+<section class="card hist" id="histc" hidden><h2 id="t_hist"></h2><div id="hist"></div></section>
+<p class="note" id="t_disc"></p>
+</main>
+
+<script>
+const T={
+id:{sub:"Kalkulator prediksi pertandingan",teams:"Pertandingan",home:"Tim kandang",away:"Tim tandang",
+form:"Hasil 5 laga terakhir",hf:"Kandang (gol-kebobolan)",af:"Tandang (gol-kebobolan)",formhint:"Terisi otomatis dari hasil pertandingan nyata saat kamu menekan Hitung. Boleh diedit manual (format 2-1).",fetching:"Mengambil data pertandingan...",e4:"Tim tidak ditemukan. Cek ejaan nama tim (pakai nama Inggris) atau isi skor manual",e5:"Gagal mengambil data (internet atau batas API). Isi skor manual atau coba lagi.",src:"Sumber data: TheSportsDB",stale:"Laga terakhir bertanggal",stale2:"data mungkin tidak terbaru.",key:"API key TheSportsDB (opsional)",
+lines:"Garis pasar",ah:"Handicap (untuk kandang)",ou:"Over/Under (total gol)",go:"Hitung prediksi",
+scc:"Skor akhir paling mungkin",pick:"Saran pilihan",conf:"Keyakinan",c:["Rendah","Sedang","Tinggi"],
+x2:"Peluang menang",hl:"Kandang",dl:"Seri",al:"Tandang",ahm:"Handicap",oum:"Over/Under",top:"5 skor teratas",
+pickT:"Pilih ",none:"Belum jelas, sebaiknya lewati",over:"Over",under:"Under",wins:"peluang menang",
+copy:"Salin hasil",reset:"Ulangi",hist:"Riwayat",
+e1:"Isi nama tim kandang dan tandang.",e2:"Data laga kurang dari 3 per tim. Isi skor manual (format 2-1).",e3:"Isi angka handicap dan Over/Under dengan benar.",
+disc:"Penting: ini perkiraan statistik dari data yang kamu isi, bukan jaminan. Hasil di lapangan bisa berbeda (cedera, kartu merah, cuaca, motivasi). Tidak ada klaim akurasi di aplikasi ini. Jangan bertaruh dengan uang yang tidak siap hilang.",copied:"Tersalin"},
+en:{sub:"Match prediction calculator",teams:"Match",home:"Home team",away:"Away team",
+form:"Last 5 results",hf:"Home (scored-conceded)",af:"Away (scored-conceded)",formhint:"Filled automatically from real match results when you tap Calculate. You can edit manually (format 2-1).",fetching:"Fetching match data...",e4:"Team not found. Check the spelling (use English names) or enter scores manually",e5:"Could not fetch data (internet or API limit). Enter scores manually or retry.",src:"Data source: TheSportsDB",stale:"Latest match is dated",stale2:"data may be out of date.",key:"TheSportsDB API key (optional)",
+lines:"Market lines",ah:"Handicap (for home)",ou:"Over/Under (total goals)",go:"Calculate prediction",
+scc:"Most likely final score",pick:"Suggested pick",conf:"Confidence",c:["Low","Medium","High"],
+x2:"Win chances",hl:"Home",dl:"Draw",al:"Away",ahm:"Handicap",oum:"Over/Under",top:"Top 5 scorelines",
+pickT:"Pick ",none:"Unclear, better to skip",over:"Over",under:"Under",wins:"win chance",
+copy:"Copy result",reset:"Start over",hist:"History",
+e1:"Enter both home and away team names.",e2:"Fewer than 3 matches per team. Enter scores manually (format 2-1).",e3:"Enter valid handicap and Over/Under numbers.",
+disc:"Important: this is a statistical estimate from the data you enter, not a guarantee. Real matches can differ (injuries, red cards, weather, motivation). This app makes no accuracy claim. Never bet money you cannot afford to lose.",copied:"Copied"}};
+let L="id",last=null;const $=id=>document.getElementById(id);
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+function build(){for(const p of["hf","af"]){const box=$(p);if(box.children.length)continue;for(let i=1;i<=5;i++){const e=document.createElement("input");e.id=p+i;e.placeholder=i+": 2-1";e.autocomplete="off";e.setAttribute("aria-label",p+" "+i);box.appendChild(e)}}
+ document.querySelectorAll(".chips").forEach(c=>{if(c.children.length)return;const f=c.dataset.for,vals=f==="ah"?["-1","-0.75","-0.5","-0.25","0","+0.25","+0.5"]:["1.5","2","2.25","2.5","2.75","3","3.5"];
+  vals.forEach(v=>{const b=document.createElement("button");b.type="button";b.textContent=v;b.onclick=()=>{$(f).value=v};c.appendChild(b)})})}
+function setLang(l){L=l;store.set("lang",l);const t=T[l];document.documentElement.lang=l;
+ $("bID").setAttribute("aria-pressed",l==="id");$("bEN").setAttribute("aria-pressed",l==="en");
+ const m={sub:"sub",h_teams:"teams",l_home:"home",l_away:"away",h_form:"form",l_hf:"hf",l_af:"af",t_formhint:"formhint",l_key:"key",h_lines:"lines",l_ah:"ah",l_ou:"ou",go:"go",t_sc:"scc",t_pick:"pick",t_conf:"conf",t_1x2:"x2",t_ahm:"ahm",t_oum:"oum",t_top:"top",copy:"copy",reset:"reset",t_hist:"hist",t_disc:"disc"};
+ for(const k in m)$(k).textContent=t[m[k]];if(last)render(last);renderHist()}
+$("bID").onclick=()=>setLang("id");$("bEN").onclick=()=>setLang("en");
+
+const fact=n=>n<2?1:n*fact(n-1);const pois=(l,k)=>Math.exp(-l)*Math.pow(l,k)/fact(k);
+function grid(lh,la){const g=[];for(let i=0;i<=8;i++){g[i]=[];for(let j=0;j<=8;j++)g[i][j]=pois(lh,i)*pois(la,j)}return g}
+function part(g,fn){let w=0,p=0;for(let i=0;i<=8;i++)for(let j=0;j<=8;j++){const r=fn(i,j);if(r>0)w+=g[i][j];else if(r===0)p+=g[i][j]}return w+p/2}
+function asian(g,line,fn){const q=Math.abs(Math.round(line*4))%2===1;return q?(part(g,(i,j)=>fn(i,j,line-.25))+part(g,(i,j)=>fn(i,j,line+.25)))/2:part(g,(i,j)=>fn(i,j,line))}
+function pair(g,line,f1,f2){const a=asian(g,line,f1),b=asian(g,line,f2),s=a+b;return[a/s,b/s]}
+const num=v=>{const n=parseFloat(String(v).replace(",","."));return isNaN(n)?null:n};
+function form(p){let gf=0,ga=0,n=0;for(let i=1;i<=5;i++){const m=String($(p+i).value).match(/(\d+)\D+(\d+)/);if(m){gf+=+m[1];ga+=+m[2];n++}}return{gf:gf/(n||1),ga:ga/(n||1),n}}
+
+const fx={h:null,a:null},manual={h:false,a:false},cands={h:[],a:[]};
+["hf","af"].forEach(p=>$(p).addEventListener("input",()=>{manual[p==="hf"?"h":"a"]=true}));
+["selh","sela"].forEach(id=>$(id).addEventListener("change",()=>{fx[id==="selh"?"h":"a"]=null}));
+$("apikey").value=store.get("key","");$("apikey").addEventListener("input",e=>store.set("key",e.target.value.trim()));
+async function sdb(path){const r=await fetch("https://www.thesportsdb.com/api/v1/json/"+(store.get("key","")||"3")+"/"+path);if(!r.ok)throw new Error("http "+r.status);return r.json()}
+async function loadTeam(side,name){const p=side==="h"?"hf":"af",sel=$(side==="h"?"selh":"sela"),key=name.toLowerCase();
+ if(!cands[side].length||cands[side].q!==key){const d=await sdb("searchteams.php?t="+encodeURIComponent(name));const list=(d.teams||[]).filter(x=>x.strSport==="Soccer");list.q=key;cands[side]=list;sel.innerHTML="";
+  list.forEach((x,i)=>{const o=document.createElement("option");o.value=i;o.textContent=x.strTeam+" - "+(x.strLeague||"")+(x.strCountry?" ("+x.strCountry+")":"");sel.appendChild(o)});$("pickers").hidden=false}
+ const list=cands[side];if(!list.length)return null;const team=list[+sel.value||0];
+ const d=await sdb("eventslast.php?id="+team.idTeam),ok=v=>v!==null&&v!==undefined&&v!=="";
+ const ev=(d.results||[]).filter(e=>ok(e.intHomeScore)&&ok(e.intAwayScore)).sort((x,y)=>x.dateEvent<y.dateEvent?1:-1).slice(0,5);
+ const rows=ev.map(e=>{const ih=e.idHomeTeam===team.idTeam;return{date:e.dateEvent,home:e.strHomeTeam,away:e.strAwayTeam,hs:+e.intHomeScore,as:+e.intAwayScore,gf:ih?+e.intHomeScore:+e.intAwayScore,ga:ih?+e.intAwayScore:+e.intHomeScore}});
+ for(let i=1;i<=5;i++)$(p+i).value=rows[i-1]?rows[i-1].gf+"-"+rows[i-1].ga:"";
+ manual[side]=false;fx[side]={key,rows,name:team.strTeam};return fx[side]}
+function showSrc(){const t=T[L],box=$("src");box.innerHTML="";let any=false;
+ for(const s of["h","a"]){const f=fx[s];if(!f||manual[s])continue;any=true;const b=document.createElement("b");b.textContent=f.name;box.appendChild(b);
+  f.rows.forEach(r=>{const d=document.createElement("div"),a=document.createElement("span"),c=document.createElement("span");a.textContent=r.date+"  "+r.home+" "+r.hs+"-"+r.as+" "+r.away;c.textContent=r.gf+"-"+r.ga;d.append(a,c);box.appendChild(d)});
+  if(f.rows[0]&&(Date.now()-new Date(f.rows[0].date))/864e5>45){const w=document.createElement("div");w.className="w";w.textContent=t.stale+" "+f.rows[0].date+": "+t.stale2;box.appendChild(w)}}
+ if(any){const z=document.createElement("b");z.textContent=t.src;box.appendChild(z)}box.hidden=!any}
+$("go").onclick=async()=>{const t=T[L],e=$("err");e.hidden=true;
+ const home=$("home").value.trim(),away=$("away").value.trim();
+ if(!home||!away)return fail(t.e1);
+ const btn=$("go");btn.disabled=true;btn.textContent=t.fetching;
+ try{for(const[sd,nm,p]of[["h",home,"hf"],["a",away,"af"]]){const enough=form(p).n>=3;
+   if(manual[sd]&&enough)continue;if(fx[sd]&&fx[sd].key===nm.toLowerCase()&&enough)continue;
+   const r=await loadTeam(sd,nm);if(!r)return fail(t.e4+": "+nm)}}
+ catch(err){if(form("hf").n<3||form("af").n<3)return fail(t.e5)}
+ finally{btn.disabled=false;btn.textContent=t.go}
+ showSrc();
+ const H=form("hf"),A=form("af");if(H.n<3||A.n<3)return fail(t.e2);
+ const ah=num($("ah").value),ou=num($("ou").value);if(ah===null||ou===null||ou<=0)return fail(t.e3);
+ const avg=1.35,w=.7,mix=x=>(x*w+avg*(1-w))/avg;
+ const lh=Math.max(.2,avg*mix(H.gf)*mix(A.ga)*1.1),la=Math.max(.2,avg*mix(A.gf)*mix(H.ga)*.92);
+ const g=grid(lh,la);let ph=0,pd=0,pa=0;const all=[];
+ for(let i=0;i<=8;i++)for(let j=0;j<=8;j++){const p=g[i][j];all.push([i,j,p]);if(i>j)ph+=p;else if(i===j)pd+=p;else pa+=p}
+ const s=ph+pd+pa;all.sort((x,y)=>y[2]-x[2]);
+ const [cH,cA]=pair(g,ah,(i,j,x)=>(i-j)+x,(i,j,x)=>-((i-j)+x));
+ const [pO,pU]=pair(g,ou,(i,j,x)=>(i+j)-x,(i,j,x)=>x-(i+j));
+ last={home,away,ah,ou,ph:ph/s,pd:pd/s,pa:pa/s,cH,cA,pO,pU,top:all.slice(0,5)};
+ render(last);addHist(last);$("out").scrollIntoView({behavior:"smooth",block:"start"})};
+function fail(m){const e=$("err");e.textContent=m;e.hidden=false}
+const pc=x=>Math.round(x*100)+"%",sg=x=>(x>0?"+":"")+x;
+function render(r){const t=T[L],edge=Math.abs(r.cH-r.cA);
+ $("rh").textContent=r.home;$("ra").textContent=r.away;$("rs").textContent=r.top[0][0]+" - "+r.top[0][1];
+ $("pick").textContent=edge<.06?t.none:(r.cH>r.cA?t.pickT+r.home+" ("+sg(r.ah)+")":t.pickT+r.away+" ("+sg(-r.ah)+")");
+ const lv=edge<.06?0:edge<.14?1:edge<.24?2:3;$("confw").textContent=t.c[Math.max(0,lv-1)];
+ $("dots").innerHTML=[1,2,3].map(n=>`<i class="${n<=lv?"on":""}"></i>`).join("");
+ const set=(id,v)=>{$(id).style.width=Math.max(v*100,6)+"%";$(id).textContent=pc(v)};set("bh",r.ph);set("bd",r.pd);set("ba",r.pa);
+ $("lh").textContent=t.hl+" "+r.home;$("ld").textContent=t.dl;$("la").textContent=t.al+" "+r.away;
+ const hw=r.cH>=r.cA;$("ahv").textContent=pc(hw?r.cH:r.cA);$("ahs").textContent=(hw?r.home+" "+sg(r.ah):r.away+" "+sg(-r.ah))+" "+t.wins;
+ const ov=r.pO>=r.pU;$("ouv").textContent=pc(ov?r.pO:r.pU);$("ous").textContent=(ov?t.over:t.under)+" "+r.ou;
+ $("top").innerHTML=r.top.map(x=>`<div><b>${x[0]}-${x[1]}</b><span>${pc(x[2])}</span></div>`).join("");
+ $("out").hidden=false}
+function summary(r){return`${r.home} vs ${r.away}\n${$("rs").textContent}\n${$("pick").textContent}\nO/U ${r.ou}: ${$("ouv").textContent} ${$("ous").textContent}\n${T[L].disc}`}
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText(summary(last));$("copy").textContent=T[L].copied;setTimeout(()=>$("copy").textContent=T[L].copy,1200)}catch(e){}};
+$("reset").onclick=()=>{document.querySelectorAll("input").forEach(i=>{if(!["ah","ou","apikey"].includes(i.id))i.value=""});fx.h=fx.a=null;manual.h=manual.a=false;cands.h=[];cands.a=[];$("pickers").hidden=true;$("src").hidden=true;$("ah").value="-0.5";$("ou").value="2.5";last=null;$("out").hidden=true;window.scrollTo({top:0,behavior:"smooth"})};
+function addHist(r){const h=store.get("hist",[]);h.unshift({home:r.home,away:r.away,s:r.top[0][0]+"-"+r.top[0][1],hf:[1,2,3,4,5].map(i=>$("hf"+i).value),af:[1,2,3,4,5].map(i=>$("af"+i).value),ah:r.ah,ou:r.ou});store.set("hist",h.slice(0,5));renderHist()}
+function renderHist(){const h=store.get("hist",[]);$("histc").hidden=!h.length;$("hist").innerHTML="";h.forEach(x=>{const b=document.createElement("button");b.innerHTML=`<span></span><span></span>`;b.children[0].textContent=x.home+" vs "+x.away;b.children[1].textContent=x.s;
+ b.onclick=()=>{$("home").value=x.home;$("away").value=x.away;x.hf.forEach((v,i)=>$("hf"+(i+1)).value=v);x.af.forEach((v,i)=>$("af"+(i+1)).value=v);$("ah").value=x.ah;$("ou").value=x.ou;manual.h=manual.a=true;$("go").click()};$("hist").appendChild(b)})}
+build();setLang(store.get("lang","id"));
+</script>
+</body>
+</html>
